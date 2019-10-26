@@ -67,7 +67,7 @@ checkJson = path => {
     if ( typeof json.counter !== 'number' || json.counter <= 10 ) { props.counter = json.counter };
 
     // "config" - equal "Common"
-    if ( typeof json.config !== 'string' || !json.config.toLowerCase() !== 'common' ) { props.config = json.config };
+    if ( typeof json.config !== 'string' || json.config.toLowerCase() !== 'common' ) { props.config = json.config };
 
     // "const" - equal "FiRst" (case insensitive)
     if ( json.const !== 'FiRst' ) { props.const = json.const };
