@@ -53,7 +53,7 @@ checkJson = path => {
     if ( typeof json.element !== 'object' ) { props.element = json.element };
 
     // "screenshot" - null
-    if ( typeof json.screenshot !== 'object' || json.screenshot === null ) { props.screenshot = json.screenshot };
+    if ( typeof json.screenshot !== 'object' || json.screenshot !== null ) { props.screenshot = json.screenshot };
 
     // "elementText" – string
     if ( typeof json.elementText !== 'string' ) { props.elementText = json.elementText };
@@ -67,25 +67,25 @@ checkJson = path => {
     if ( typeof json.counter !== 'number' || json.counter <= 10 ) { props.counter = json.counter };
 
     // "config" - equal "Common"
-    if ( typeof json.config !== 'string' || json.config.toLowerCase() !== 'common' ) { props.config = json.config };
+    if ( typeof json.config !== 'string' || json.config === 'Common' ) { props.config = json.config };
 
-    // "const" - equal "FiRst" (case insensitive
+    // "const" - equal "FiRst" (case insensitive)
     if ( typeof json.const !== 'string' || json.const !== 'FiRst' ) { props.const = json.const };
 
     // "parameters" - array with length 8
-    if ( Array.isArray(json.parameters) || json.parameters.length !== 8 ) { props.parameters = json.parameters };
+    if ( !Array.isArray(json.parameters) || json.parameters.length !== 8 ) { props.parameters = json.parameters };
 
     // "description" - string with length more than 5 but less than 13
-    if ( typeof json.description === 'string' || json.description.length > 5 || json.description.length < 8 ) {
+    if ( typeof json.description !== 'string' || json.description.length > 5 || json.description.length < 8 ) {
         props.description = json.description;
     };
 
     if (Object.keys(props).length === 0) {
         console.log('OK');
     } else {
-        fs.writeFile('properties.json', JSON.stringify(json), err => {
-            if (err) {
-                return console.log(err);
+        fs.writeFile('properties.json', JSON.stringify(json), error => {
+            if (error) {
+                return console.log(error);
             }
         }); 
     }
