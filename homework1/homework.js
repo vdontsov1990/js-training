@@ -5,10 +5,7 @@ const fs = require('fs');
  * @param {String} str
  * @returns {Boolean} is polindrome
  */
-isPalindrome = str => {
-    return str === str.split('').reverse().join('');
-};
-
+isPalindrome = str => str === str.split('').reverse().join('');
 
 /**
  * Replace letter to char sequence in each word of string
