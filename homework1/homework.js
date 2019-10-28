@@ -28,7 +28,7 @@ replaceChar = (inputStr, letterNumber, newChars) => {
 
 /**
 * Check input JSON
-* @param {String} pathss
+* @param {String} paths
 */
 checkJson = path => {
     const fileContent = fs.readFileSync(path).toString();
