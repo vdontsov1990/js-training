@@ -5,18 +5,18 @@ const path = require('path');
 /**
  * Convert object to array
  * @param {Object} object
- * @param {Number} propLvl Property label
+ * @param {Number} propertyDepth Property depth
  * @param {Function} callback
  */
-recursiveIteration = (object, propLvl, callback) => {
-    propLvl += 1;
+recursiveIteration = (object, propertyDepth, callback) => {
+    propertyDepth += 1;
     for (let property in object) {
         if(object.hasOwnProperty(property)) {
             if (typeof object[property] === 'object') {
-                callback(object[property], propLvl, property);
-                recursiveIteration(object[property], propLvl, callback);
+                callback(object[property], propertyDepth, property);
+                recursiveIteration(object[property], propertyDepth, callback);
             } else {
-                callback(object, propLvl, property);
+                callback(object, propertyDepth, property);
             }
         }
     }
@@ -35,10 +35,10 @@ convertJsonsToXlsx = (pathToJsonFiles, outputFolder, outputFileName = 'result.xl
 
     fs.readdirSync(pathToJsonFiles).forEach(file => {
         const jsonContent = fs.readFileSync(path.join(pathToJsonFiles, file)).toString();
-        recursiveIteration(JSON.parse(jsonContent), 0, (object, propLvl, property) => {
+        recursiveIteration(JSON.parse(jsonContent), 0, (object, propertyDepth, property) => {
             const props = [];
-            props[propLvl] = property;
-            props[propLvl + 1] = object[property];
+            props[propertyDepth] = property;
+            props[propertyDepth + 1] = object[property];
             worksheet.addRow(props);
         });
     });
