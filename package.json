@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/vdontsov1990/js-training#readme",
   "dependencies": {
-    "exceljs": "^3.3.0"
+    "exceljs": "^3.3.0",
+    "fast-diff": "^1.2.0"
   }
 }
