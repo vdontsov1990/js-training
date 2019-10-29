@@ -13,10 +13,10 @@ recursiveIteration = (object, propertyDepth, callback) => {
     for (let property in object) {
         if(object.hasOwnProperty(property)) {
             if (typeof object[property] === 'object') {
-                callback(object[property], propertyDepth, property);
+                callback(object[property], property, propertyDepth);
                 recursiveIteration(object[property], propertyDepth, callback);
             } else {
-                callback(object, propertyDepth, property);
+                callback(object, property, propertyDepth,);
             }
         }
     }
@@ -35,7 +35,7 @@ convertJsonsToXlsx = (pathToJsonFiles, outputFolder, outputFileName = 'result.xl
 
     fs.readdirSync(pathToJsonFiles).forEach(file => {
         const jsonContent = fs.readFileSync(path.join(pathToJsonFiles, file)).toString();
-        recursiveIteration(JSON.parse(jsonContent), 0, (object, propertyDepth, property) => {
+        recursiveIteration(JSON.parse(jsonContent), 0, (object, property, propertyDepth) => {
             const props = [];
             props[propertyDepth] = property;
             props[propertyDepth + 1] = object[property];
