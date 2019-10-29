@@ -1,0 +1,26 @@
+{
+  "name": "js-training",
+  "version": "1.0.0",
+  "description": "JS Training",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vdontsov1990/js-training.git"
+  },
+  "keywords": [
+    "node.js",
+    "chai",
+    "mocha",
+    "Jasmine",
+    "Cucumber",
+    "Protractor"
+  ],
+  "author": "Viacheslav Dontsov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vdontsov1990/js-training/issues"
+  },
+  "homepage": "https://github.com/vdontsov1990/js-training#readme",
+  "dependencies": {
+    "exceljs": "^3.3.0"
+  }
+}
