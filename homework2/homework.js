@@ -9,16 +9,19 @@ const path = require('path');
  * @param {Number} propertyDepth Property depth
  * @param {Function} callback
  */
-recursiveIteration = (object, depth, callback) => {
-    depth += 1;
+recursiveIteration = (object, propertyDepth, callback) => {
+    propertyDepth += 1;
     for (let property in object) {
         if(object.hasOwnProperty(property)) {
-            const value = object[property];
-            callback(property, value, depth);
-            if (typeof value === 'object') { recursiveIteration(value, depth, callback); }
-        }
-    }
-}
+            if (typeof object[property] === 'object') {
+                callback(object[property], propertyDepth, property);
+                recursiveIteration(object[property], propertyDepth, callback);
+            } else {
+                callback(object, propertyDepth, property);
+            };
+        };
+    };
+};
 
 /**s
  * Create .xlsx file from input JSON files
@@ -33,10 +36,10 @@ convertJsonsToXlsx = (pathToJsonFiles, outputFolder, outputFileName = 'result.xl
 
     fs.readdirSync(pathToJsonFiles).forEach(file => {
         const jsonContent = fs.readFileSync(path.join(pathToJsonFiles, file)).toString();
-        recursiveIteration(JSON.parse(jsonContent), 0, (property, value, depth) => {
+        recursiveIteration(JSON.parse(jsonContent), 0, (object, propertyDepth, property) => {
             const props = [];
-            props[depth] = property;
-            props[depth + 1] = value;
+            props[propertyDepth] = property;
+            props[propertyDepth + 1] = object[property];
             worksheet.addRow(props);
         });
     });
@@ -50,58 +53,48 @@ convertJsonsToXlsx = (pathToJsonFiles, outputFolder, outputFileName = 'result.xl
  */
 watchToChangesInFolder = (inputFolder, outputFile) => {
 
-    const currentFiles = fs.readdirSync(inputFolder).map(file => {
-        return {
-            'filename': file,
-            'content': fs.readFileSync(path.join(inputFolder, file)).toString()
-        }
-    });
+    // Get current filenames and content
+    getFiles = () => {
+        return fs.readdirSync(inputFolder).map(file => {
+            return {
+                'filename': file,
+                'content': fs.readFileSync(path.join(inputFolder, file)).toString()
+            }
+        });
+    };
 
+    let currentFiles = getFiles();
     const events = [];
 
     fs.watch(inputFolder, (event, filename) => {
-        if (filename.includes('.csv')) {
+        if (filename.endsWith('.csv')) {
 
             const changes = {
                 'event': event,
                 'filename': filename
             };
 
-            console.log(events)
-
-
             switch(event) {
                 case 'change':
                     const file = currentFiles.find(file => file.filename === filename);
-                    if (file) {
-                        const updatedContent = fs.readFileSync(path.join(inputFolder, filename)).toString();
-                        const differences = diff(file.content, updatedContent);
-                        changes.actions = new Array();
+                    const updatedContent = fs.readFileSync(path.join(inputFolder, filename)).toString();
+                    const updates = diff(file.content, updatedContent);
+                    changes.actions = new Array();
 
-                        const regExp = /(\r\n|\n|\r)/gm;
-                        for (let difference of differences) {
-                            switch(difference[0]) {
-                                case -1:
-                                    changes.actions.push( {'delete': difference[1].replace(regExp, '')} );
-                                    break;
-                                case 1:
-                                    changes.actions.push( {'add': difference[1].replace(regExp, '')} );
-                                    break;
-                            } 
-                        }
-
-                        currentFiles[currentFiles.findIndex(file => file.filename === filename)].content = updatedContent;
-                    } else {
-                        const currentFileNames = currentFiles.map(state => state.filename);
-                        const updatedFileNames = fs.readdirSync(inputFolder);
-                        const difference = currentFileNames.filter(x => !updatedFileNames.includes(x))[0];
-                        
-                        changes.actions = 'rename';
-                        changes.filename = difference;
-                        changes.new_filename = filename;
-                        currentFiles[currentFiles.findIndex(file => file.filename === difference)].filename = filename;
+                    const regExp = /(\r\n|\n|\r)/gm;
+                    for (let update of updates) {
+                        switch(update[0]) {
+                            case -1:
+                                changes.actions.push( {'delete': update[1].replace(regExp, '')} );
+                                break;
+                            case 1:
+                                changes.actions.push( {'add': update[1].replace(regExp, '')} );
+                                break;
+                        };
                     };
-                    
+
+                    if (!changes.actions.length) { changes.actions = 'save' };
+                    currentFiles = getFiles();
                     events.push(changes);
                     break;
 
@@ -109,31 +102,35 @@ watchToChangesInFolder = (inputFolder, outputFile) => {
                     const currentFileNames = currentFiles.map(state => state.filename);
                     const updatedFileNames = fs.readdirSync(inputFolder);
 
-                    if (currentFileNames.length > updatedFileNames.length) {
-                        changes.actions = 'delete file';
-                        const index = currentFiles.findIndex(file => file.filename === filename);
-                        currentFileNames.splice(index, 0);
-                    } else {
-                        changes.actions = 'create file';
-
-                        currentFiles.push({
-                            'filename': filename,
-                            'content': fs.readFileSync(path.join(inputFolder, filename)).toString()
-                        });
+                    switch(true) {
+                        case currentFileNames.length > updatedFileNames.length:
+                            changes.actions = 'delete file';
+                            break;
+                        case currentFileNames.length < updatedFileNames.length:
+                            changes.actions = 'create file';
+                            break;
+                        case currentFileNames.length === updatedFileNames.length:
+                            const newFilename = updatedFileNames.filter(name => !currentFileNames.includes(name))[0];                        
+                            changes.actions = 'rename';
+                            changes.new_filename = newFilename;
+                            break;
                     };
 
+                    currentFiles = getFiles();
                     events.push(changes);
                     break;
-            }
+            };
 
-            fs.writeFile(outputFile, JSON.stringify(events), error => {
+            fs.writeFileSync(outputFile, JSON.stringify(events), error => {
                 if (error) {
                     return console.log(error);
-                }
+                };
             }); 
-        }
+        };
     });
 };
+
+watchToChangesInFolder('/Users/vdontsov/code/js-training/homework2/csv', '/Users/vdontsov/code/js-training/homework2/result.json')
 
 module.exports = {
     convertJsonsToXlsx,
