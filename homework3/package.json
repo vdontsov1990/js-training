@@ -7,29 +7,27 @@
     "type": "git",
     "url": "git+https://github.com/vdontsov1990/js-training.git"
   },
-
   "keywords": [
     "protractor",
     "jasmine"
   ],
-
   "author": "Viacheslav Dontsov",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vdontsov1990/js-training/issues"
   },
-
   "homepage": "https://github.com/vdontsov1990/js-training#readme",
-
   "scripts": {
     "wdm:update": "webdriver-manager update",
     "wdm:start": "webdriver-manager start",
     "e2e": "protractor protractor.config.js"
   },
-
   "dependencies": {
     "jasmine2-protractor-utils": "^1.3.0",
     "protractor": "^5.4.2",
     "yargs": "^9.0.1"
+  },
+  "devDependencies": {
+    "protractor-beautiful-reporter": "^1.3.5"
   }
 }
