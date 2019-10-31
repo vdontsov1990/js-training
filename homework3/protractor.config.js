@@ -1,7 +1,7 @@
 const HtmlReporter = require('protractor-beautiful-reporter');
 const yargs = require('yargs')
     .options({
-        'multiCaps': {
+        multiCaps: {
             description: 'Use multi capabilities',
             type: 'boolean'
         },
@@ -12,25 +12,30 @@ const yargs = require('yargs')
  */
 const multiCaps = yargs.multiCaps === true ? true : false;
 
-exports.config = {
+/**
+ * Browser capatibilities
+ */
+const capabilities = {
+    browserName: 'chrome',
+    shardTestFiles: false,
+    maxInstances: 2,
+};
+
+/**
+ * Multi capatibilities
+ */
+const multiCapabilities = [{ 
+        browserName: 'chrome',
+        version: '66.0.3359.139',
+    }, {
+        browserName: 'firefox',
+    }
+];
+
+exports.config = Object.assign({}, {
     seleniumAddress: 'http://localhost:4444/wd/hub',
     // directConnect: true,  
     baseUrl: '',
-
-    multiCapabilities: multiCaps === true
-        ? [{ 
-            browserName: 'chrome',
-            version: '66.0.3359.139',
-        }, {
-            browserName: 'firefox',
-        }] : undefined,
-
-    capabilities: multiCaps === false 
-        ? {
-            browserName: 'chrome',
-            shardTestFiles: false,
-            maxInstances: 2,
-        } : undefined,
 
     specs: [
         `e2e/${yargs.spec || "*/*-spec.js"}`
@@ -56,6 +61,10 @@ exports.config = {
      */
     protractorBeautifulReporterOpts: {
         baseDirectory: 'tmp/screenshots',
+        screenshotsSubfolder: 'images',
+        jsonsSubfolder: 'jsons',
+        takeScreenShotsOnlyForFailedSpecs: true,
+        excludeSkippedSpecs: false,
     },
 
     /**
@@ -72,4 +81,9 @@ exports.config = {
     beforeLaunch: function () {},
 
     onComplete: function () {},
-};
+
+}, multiCaps ? {
+    multiCapabilities: multiCapabilities
+} : {
+    capabilities: capabilities
+});
