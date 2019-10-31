@@ -32,7 +32,7 @@ const multiCapabilities = [{
     }
 ];
 
-exports.config = Object.assign({}, {
+const protractorConfig = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
     // directConnect: true,  
     baseUrl: '',
@@ -81,9 +81,8 @@ exports.config = Object.assign({}, {
     beforeLaunch: function () {},
 
     onComplete: function () {},
+};
 
-}, multiCaps ? {
-    multiCapabilities: multiCapabilities
-} : {
-    capabilities: capabilities
-});
+exports.config = Object.assign({}, protractorConfig , multiCaps 
+    ? { multiCapabilities: multiCapabilities} 
+    : {capabilities: capabilities});
