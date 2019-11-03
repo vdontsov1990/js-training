@@ -5,7 +5,7 @@ class SearchResultPage extends BasePage {
     constructor() {
         super();
         this.serchText = element(by.id('search_result_title_text'));
-        this.productImages = element.all(by.css('img[data-rz-lazy-load-src]'));
+        this.productImages = element.all(by.className('rz-lazy-load'));
         this.productTitles = element.all(by.css('div[class*=title] a'));
         this.priceValues = element.all(by.css('span[id*=price]'));
         this.priceCurrencies = element.all(by.css('span[class*=sign]'));
