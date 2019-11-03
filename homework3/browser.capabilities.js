@@ -4,6 +4,9 @@
 const capabilities = {
     capabilities: {
         browserName: 'chrome',
+        chromeOptions: {
+            args: ['--disable-notifications']
+        },
         shardTestFiles: false,
         maxInstances: 2,
     }
@@ -15,8 +18,14 @@ const capabilities = {
 const multiCapabilities = {
     multiCapabilities: [{ 
         browserName: 'chrome',
+        chromeOptions: {
+            args: ['--disable-notifications']
+        },
     }, {
         browserName: 'firefox',
+        prefs: {
+            'dom.webnotifications.enabled': false
+        },
     }]
 }
 

@@ -1,7 +1,7 @@
 const { capabilities, multiCapabilities } = require('./browser.capabilities');
 const cliArgs = require('./cli.run.args');
 const HtmlReporter = require('protractor-beautiful-reporter');
-
+const fs = require('fs');
 
 const protractorConfig = {
     seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -27,11 +27,11 @@ const protractorConfig = {
     },
 
     params: {
-        timeout: 10000,
+        timeout: 20000,
     },
 
     onPrepare: () => {
-        console.log(browser.capabilities)
+        deleteFiles('tmp');
         browser.waitForAngularEnabled(false);
 
         // Add a screenshot reporter and store screenshots to `/tmp/screenshots`:
@@ -47,7 +47,18 @@ const protractorConfig = {
     beforeLaunch: () => {},
 
     onComplete: () => {},
+
     
+};
+
+const deleteFiles = path => {
+    if (fs.existsSync(path)) {
+        fs.readdirSync(path).forEach(file => {
+            const curPath = path + "/" + file;
+            fs.lstatSync(curPath).isDirectory() ? deleteFiles(curPath) : fs.unlinkSync(curPath);
+        });
+        fs.rmdirSync(path);
+    };
 };
 
 exports.config = Object.assign({}, 
