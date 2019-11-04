@@ -34,7 +34,7 @@ const protractorConfig = {
         deleteFiles('tmp');
         browser.waitForAngularEnabled(false);
 
-        // Add a screenshot reporter and store screenshots to `/tmp/screenshots`:
+        // Add a screenshot reporter and store screenshots to `/tmp/report`:
         jasmine.getEnv().addReporter(new HtmlReporter({
             baseDirectory: 'tmp/report',
             screenshotsSubfolder: 'images',
