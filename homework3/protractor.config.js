@@ -47,14 +47,13 @@ const protractorConfig = {
     beforeLaunch: () => {},
 
     onComplete: () => {},
-
-    
+  
 };
 
 const deleteFiles = path => {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(file => {
-            const curPath = path + "/" + file;
+            const curPath = path + '/' + file;
             fs.lstatSync(curPath).isDirectory() ? deleteFiles(curPath) : fs.unlinkSync(curPath);
         });
         fs.rmdirSync(path);
