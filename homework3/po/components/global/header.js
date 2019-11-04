@@ -3,11 +3,11 @@ const utils = require('../../../utils/utils');
 class Header {
 
     constructor() {
-        this.logo = element(by.css('.header__logo > img'));
-        this.searchField = element(by.css('input[search-input]'));
-        this.searchButton = element(by.css('button[class*="search-form__submit"]'));
-        this.basketButton = element(by.css('a[class*="button_type_basket"]'));
-        this.compareProductsButton = element(by.css('a[class*=compare]'));
+        this.logo = element(by.css('a[class*=logo] > img'));
+        this.searchField = element(by.css('input[class*=search]'));
+        this.searchButton = element(by.css('button[class*=search]'));
+        this.basketButton = element(by.css('a[class*=cart]'));
+        this.compareProductsButton = element(by.css('a[class*=comparison]'));
     };
 
     async enterIntoSearchField(text) {

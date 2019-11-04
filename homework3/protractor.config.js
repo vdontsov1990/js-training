@@ -36,7 +36,7 @@ const protractorConfig = {
 
         // Add a screenshot reporter and store screenshots to `/tmp/screenshots`:
         jasmine.getEnv().addReporter(new HtmlReporter({
-            baseDirectory: 'tmp/screenshots',
+            baseDirectory: 'tmp/report',
             screenshotsSubfolder: 'images',
             jsonsSubfolder: 'jsons',
             takeScreenShotsOnlyForFailedSpecs: true,
